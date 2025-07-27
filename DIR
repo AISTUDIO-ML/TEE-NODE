@@ -1,0 +1,312 @@
+const fs = require('fs');
+const path = require('path');
+
+function ensureDir(filePath) {
+  if (!fs.existsSync(filePath)) {
+    fs.mkdirSync(filePath, { recursive: true });
+  }
+}
+
+function writeFile(filePath, content) {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, content);
+    console.log(`Created: ${filePath}`);
+  } else {
+    console.log(`Skipped (already exists): ${filePath}`);
+  }
+}
+
+// Directories
+const dirs = [
+  'backend/src',
+  'backend/tests',
+  'frontend/src',
+  'frontend/public',
+  'frontend/tests',
+  'python/src',
+  'python/tests',
+  'docs',
+  'scripts',
+  'assets',
+  '.github/workflows',
+  '.github/ISSUE_TEMPLATE',
+];
+
+// Files & Content
+const files = [
+  {
+    path: 'backend/src/index.js',
+    content: `const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello from Node.js backend!');
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(\`Backend running on port \${PORT}\`);
+});
+`
+  },
+  {
+    path: 'backend/package.json',
+    content: `{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \\"No tests yet\\""
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
+`
+  },
+  {
+    path: 'backend/.env.example',
+    content: `PORT=5000
+`
+  },
+  {
+    path: 'backend/tests/sample.test.js',
+    content: `// Sample test file (use a test runner like Jest or Mocha)
+console.log('Backend test placeholder');
+`
+  },
+
+  {
+    path: 'frontend/src/App.tsx',
+    content: `import React from 'react';
+
+function App() {
+  return <div>Hello from React TypeScript frontend!</div>;
+}
+
+export default App;
+`
+  },
+  {
+    path: 'frontend/src/index.tsx',
+    content: `import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+`
+  },
+  {
+    path: 'frontend/package.json',
+    content: `{
+  "name": "frontend",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "start": "echo \\"Run with your favorite dev server\\"",
+    "test": "echo \\"No tests yet\\""
+  }
+}
+`
+  },
+  {
+    path: 'frontend/tsconfig.json',
+    content: `{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
+`
+  },
+  {
+    path: 'frontend/public/index.html',
+    content: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>React TypeScript Frontend</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+`
+  },
+  {
+    path: 'frontend/tests/sample.test.ts',
+    content: `// Sample test file (use a test runner like Jest)
+console.log('Frontend test placeholder');
+`
+  },
+
+  {
+    path: 'python/src/main.py',
+    content: `def main():
+    print("Hello from Python service!")
+
+if __name__ == "__main__":
+    main()
+`
+  },
+  {
+    path: 'python/requirements.txt',
+    content: `# Add Python dependencies here
+`
+  },
+  {
+    path: 'python/.env.example',
+    content: `# Example: 
+API_KEY=your_api_key_here
+`
+  },
+  {
+    path: 'python/tests/test_sample.py',
+    content: `# Sample test file (use pytest or unittest)
+def test_placeholder():
+    assert True
+`
+  },
+
+  {
+    path: 'docs/README.md',
+    content: `# Project Documentation
+
+Welcome to the project!  
+- **Backend**: Node.js (Express)  
+- **Frontend**: React with TypeScript  
+- **Python**: Scripts & Services
+
+## Directory Structure
+
+- \`backend/\` - Node.js REST API
+- \`frontend/\` - React TypeScript app
+- \`python/\` - Python scripts/services
+
+## Getting Started
+
+See individual directories for setup instructions.
+`
+  },
+  {
+    path: 'scripts/deploy.sh',
+    content: `#!/bin/bash
+echo "Deployment script placeholder"
+`
+  },
+  {
+    path: 'assets/README.txt',
+    content: `Place your images and media files here.
+`
+  },
+  {
+    path: '.github/workflows/ci.yml',
+    content: `name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies (backend)
+        run: cd backend && npm install
+      - name: Run backend tests
+        run: cd backend && npm test
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Python dependencies
+        run: cd python && pip install -r requirements.txt
+      - name: Run Python tests
+        run: cd python && python -m unittest discover tests
+`
+  },
+  {
+    path: '.github/ISSUE_TEMPLATE/bug_report.md',
+    content: `---
+name: Bug Report
+about: Create a report to help us improve
+---
+
+**Describe the bug**
+A clear and concise description of what the bug is.
+
+**To Reproduce**
+Steps to reproduce the behavior:
+
+**Expected behavior**
+A clear and concise description of what you expected to happen.
+`
+  },
+  {
+    path: 'README.md',
+    content: `# Multi-language Boilerplate Repo
+
+This repo contains:
+- **Backend**: Node.js (Express)
+- **Frontend**: React with TypeScript
+- **Python**: Scripts & Services
+
+See \`docs/\` for more details.
+`
+  },
+  {
+    path: '.gitignore',
+    content: `# Node.js
+backend/node_modules
+frontend/node_modules
+
+# Python
+python/__pycache__/
+python/*.pyc
+python/.env
+
+# React build
+frontend/build
+
+# Env files
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+`
+  },
+  {
+    path: 'LICENSE',
+    content: `MIT License
+`
+  }
+];
+
+// Create directories
+dirs.forEach(dir => ensureDir(dir));
+
+// Create files
+files.forEach(file => writeFile(file.path, file.content));
+
+console.log('Boilerplate setup complete!');
