@@ -83,3 +83,15 @@ Visit [GitHub Repository](https://github.com/AISTUDIO-ML/TEE-NODE) or contact Ho
 ---
 
 🧭 Architecture Diagram —
+
+
+
+
+# Multi-language Boilerplate Repo
+
+This repo contains:
+- **Backend**: Node.js (Express)
+- **Frontend**: React with TypeScript
+- **Python**: Scripts & Services
+
+See `docs/` for more details.
